@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 
 import torch
 import torchvision.models as models
