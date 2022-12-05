@@ -15,7 +15,7 @@ import torchvision.datasets as datasets
 import torchvision.models as models
 import torchvision.transforms as transforms
 from fastdownload import FastDownload
-from torch.optim.lr_scheduler import StepLR
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 model_names = sorted(name for name in models.__dict__
     if name.islower() and not name.startswith("__")
@@ -100,7 +100,7 @@ def main():
                                 momentum=args.momentum,
                                 weight_decay=args.weight_decay)
     
-    scheduler = StepLR(optimizer, step_size=args.epochs / 3, gamma=0.1)
+    scheduler = ReduceLROnPlateau(optimizer, patience=5, min_lr=1e-5, verbose=True)
     
     # optionally resume from a checkpoint
     if args.resume:
@@ -170,9 +170,9 @@ def main():
         train(train_loader, model, criterion, optimizer, epoch, device, args)
 
         # evaluate on validation set
-        acc1, _ = validate(val_loader, model, criterion, args)
+        acc1, loss = validate(val_loader, model, criterion, args)
         
-        scheduler.step()
+        scheduler.step(loss)
         
         # remember best acc@1 and save checkpoint
         is_best = acc1 > best_acc1
