@@ -56,7 +56,7 @@ parser.add_argument('--gpu', default=None, type=int,
 best_acc1 = 0
 
 DATASET_URL = 'https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-320.tgz'
-DATASET_PATH = '~/.nncf'
+DATASET_PATH = '~/.cache/nncf/datasets'
 DATASET_CLASSES = 10
 
 
@@ -100,7 +100,7 @@ def main():
                                 momentum=args.momentum,
                                 weight_decay=args.weight_decay)
     
-    scheduler = ReduceLROnPlateau(optimizer, patience=5, min_lr=1e-5, verbose=True)
+    scheduler = ReduceLROnPlateau(optimizer)
     
     # optionally resume from a checkpoint
     if args.resume:
@@ -185,6 +185,11 @@ def main():
             'optimizer' : optimizer.state_dict(),
             'scheduler' : scheduler.state_dict()
         }, is_best)
+
+        lr_threshold = 1e-6
+        if optimizer.param_groups[0]['lr'] < lr_threshold:
+            print(f'The lr < {lr_threshold}. Stop training.')
+            break
 
 
 def train(train_loader, model, criterion, optimizer, epoch, device, args):

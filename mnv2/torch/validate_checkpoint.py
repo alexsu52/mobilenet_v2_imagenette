@@ -1,22 +1,22 @@
+import sys
+
 import numpy as np
-
 import torch
-import torchvision.models as models
-
 import torchvision.datasets as datasets
+import torchvision.models as models
 import torchvision.transforms as transforms
 from fastdownload import FastDownload
 from sklearn.metrics import accuracy_score
-
 from tqdm import tqdm
 
+DEFAULT_CHECKPOINT = 'pytorch_model.bin'
 DATASET_URL = 'https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-320.tgz'
-DATASET_PATH = '~/.nncf'
+DATASET_PATH = '~/.cache/nncf/datasets'
 DATASET_CLASSES = 10
 
 
-def load_checkpoint(model):  
-    checkpoint = torch.load('pytorch_model.bin')
+def load_checkpoint(model, path):  
+    checkpoint = torch.load(path)
     model.load_state_dict(checkpoint['state_dict'])
     return model
 
@@ -58,7 +58,11 @@ val_loader = torch.utils.data.DataLoader(
 
 model = models.mobilenet_v2(num_classes=DATASET_CLASSES) 
 model.eval()
-model = load_checkpoint(model)
+
+checkpoint_path = DEFAULT_CHECKPOINT
+if len(sys.argv) > 1:
+    checkpoint_path = sys.argv[1]
+model = load_checkpoint(model, checkpoint_path)
 
 top1 = validate(model, val_loader)
 
