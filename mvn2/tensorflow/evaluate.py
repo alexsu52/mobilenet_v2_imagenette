@@ -50,13 +50,8 @@ def main():
 
     with strategy.scope():
         # create the model
-        imagenet_model = tf.keras.applications.MobileNetV2()
-        
-        input = imagenet_model.input
-        output = imagenet_model.layers[-2].output
-        x = tf.keras.layers.Dense(DATASET_CLASSES, activation='softmax', 
-                                  name='predictions')(output)
-        model = tf.keras.Model(input, x, name='mobilenetv2_imagenette')
+        model = tf.keras.applications.MobileNetV2(weights=None,
+                                                  classes=DATASET_CLASSES)
         model.summary()
 
         # define loss function (criterion), optimizer, and learning rate scheduler
