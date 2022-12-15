@@ -1,9 +1,9 @@
-# MobileNet v2 TensorFlow on Imagenette
+# MobileNet v2 PyTroch on Imagenette
 Training of MobileNet v2 from Torchvision on Imagenette dataset
 
 ## Run training:
 ```
-python train.py --epochs 200 -j 6 -b 32 --lr 0.001 --wd 10e-5
+python train.py --epochs 100 -j 6 -b 32 --lr 0.001 --wd 10e-5 --pretrained
 ```
 
 ## Patch checkpoint:
@@ -13,7 +13,7 @@ python patch_checkpoint.py <checkpoint>
 ```
 
 ## Pretrained model:
-You can download pretrained model from [here](https://huggingface.co/alexsu52/mobilenet_v2_imagenette). Top-1 accuracy is 84.35%.
+You can download pretrained model from [here](https://huggingface.co/alexsu52/mobilenet_v2_imagenette). Top-1 accuracy is 98.64%.
 
 ## Export to ONNX:
 ```
